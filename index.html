@@ -1,0 +1,271 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>CoFiI2P: Coarse-to-Fine Correspondences-Based Image-to-Point Cloud Registration </title>
+  <link href="./cofii2p/style.css" rel="stylesheet">
+  <script type="text/javascript" src="./cofii2p/jquery.mlens-1.0.min.js"></script>
+  <script type="text/javascript" src="./cofii2p/jquery.js"></script>
+  <style>
+    .divider {
+      border-right: 2px dashed #737373;
+      width: 2px;
+    }
+  </style>
+  <style>
+    .divider_horizontal {
+      border-top: 2px dashed #737373;
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+    }
+  </style>
+  
+</head>
+
+<body>
+  <div class="content">
+    <h1><strong>CoFiI2P: Coarse-to-Fine Correspondences-Based Image-to-Point Cloud Registration</strong>
+    </h1>
+    <p id="authors">
+      <span>
+        <a href="https://kang-1-2-3.github.io/">Shuhao Kang*<sup>1</sup></a>
+      </span>
+      <span>
+        <a href="https://martin-liao.github.io/">Youqi Liao*<sup>2,3</sup></a>
+      </span>
+      <span>
+        <a href="https://jianping.xyz/">Jianping Li<sup>3,4,&dagger;</sup></a>
+      </span>
+      <span>
+        <a href="https://mruil.github.io/">Fuxun Liang<sup>3</sup></a>
+      </span>
+      <span>
+        <a href="https://yun-liu.github.io/">Yuhao Li<sup>3</sup></a>
+      </span>
+      <span>
+        <a href="https://yun-liu.github.io/">Xianghong Zou<sup>3</sup></a>
+      </span>
+      <span>
+        <a href="https://yun-liu.github.io/">Fangning Li<sup>5</sup></a>
+      </span>
+      <span>
+        <a href="https://xieyuanli-chen.com/">Xieyuanli Chen<sup>6</sup></a>
+      </span>
+      <span>
+        <a href="https://dongzhenwhu.github.io/index.html">Zhen Dong<sup>2,3</sup></a>
+      </span>
+      <span>
+        <a href="https://3s.whu.edu.cn/info/1025/1415.htm">Bisheng Yang<sup>3</sup></a>
+      </span>
+      <br>
+      <span class="institution">
+        <a href="https://www.tum.de/"><sup>1</sup> Technical University of Munich</a> 
+        <a href="https://en.whu.edu.cn/"><sup>2</sup> Hubei Luojia Laboratory</a> 
+        <a href="https://www.ntu.edu.sg/"><sup>3</sup> Wuhan University</a> 
+        <a href="https://www.kcl.ac.uk/"><sup>4</sup> Nanyang Technological University</a><br>
+        <a href="http://cki.com.cn/en/"><sup>5</sup> Beijing Urban Construction Exploration and Surveying Design Research Institute</a>
+        <a href="https://english.nudt.edu.cn/"><sup>6</sup> National University of Defense Technology</a></span>  
+        <sup>*</sup>The first two authors contribute equally. &nbsp;&nbsp;
+        <sup>&dagger;</sup>Corresponding author. &nbsp;&nbsp; 
+    </p>
+    <font size="+3">
+      <p style="text-align: center;">
+        <a href="https://arxiv.org/abs/2309.14660v2" target="_blank">[Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="https://www.youtube.com/watch?v=ovbedasXuZE" target="_blank">[Video]</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="https://github.com/WHU-USI3DV/CoFiI2P" target="_blank">[Code]</a>&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href="cofii2p/bibtex.txt" target="_blank">[BibTeX]</a>
+      </p>
+    </font>
+    
+    <h3>
+      <center>What can CoFiI2P do?</center>
+    </h3>
+    <img src="./cofii2p/c2f.png" class="teaser-gif" style="width:100%"><br>
+    <a style="text-align:center">
+      CoFiI2P is an  <strong> image-to-point cloud registration network with coarse-to-fine pipeline.</strong>  (a) shows our coarse-to-fine 2-stage registration pipeline
+      and (b) shows previous one-stage registration pipeline.
+  </a>
+  </div>
+    <!--
+    <div id="contentWrapper">
+      <button id="prevButton" onclick="prevPage()">&#8249;</button>
+      <div id="gif-display"></div>
+      <button id="nextButton" onclick="nextPage()">&#8250;</button>
+    </div>
+    <div id="navBar">
+      <div class="navDot" id="dot0" onclick="goToPage(0)"></div>
+      <div class="navDot" id="dot1" onclick="goToPage(1)"></div>
+    </div>
+  </div>
+  <script>
+    // pre-list all the image files under gif_cropped folder
+    var allFiles = ["sun3d-hotel_uc-scan3-0-10.gif",
+    "scene0477_01-16-19.gif",
+    "scene0025_01-2-3.gif",
+    "scene0335_02-0-4.gif",
+    "sun3d-hotel_umd-maryland_hotel3-24-28.gif",
+    "scene0642_02-6-7.gif",
+    "scene0025_01-20-24.gif",
+    "scene0223_00-11-12.gif",
+    "scene0694_00-0-4.gif",
+    "sun3d-mit_76_studyroom-76-1studyroom2-47-48.gif",
+    "sun3d-mit_76_studyroom-76-1studyroom2-29-31.gif",
+    "sun3d-mit_76_studyroom-76-1studyroom2-25-33.gif",
+    "sun3d-mit_76_studyroom-76-1studyroom2-61-62.gif",
+    "scene0265_02-17-28.gif","scene0146_02-8-12.gif",
+    "scene0309_00-2-3.gif",
+    "scene0334_02-0-1.gif",
+    "sun3d-hotel_uc-scan3-15-23.gif",
+    "scene0457_01-5-9.gif",
+    "sun3d-home_md-home_md_scan9_2012_sep_30-46-47.gif"];
+
+    var page = 0; // current page
+
+    function goToPage(p) {
+      page = p;
+      showPage();
+    }
+    // Create a copy of the allFiles array
+    var shuffledFiles = allFiles.slice();
+
+    // Fisher-Yates Shuffle
+    for (let i = shuffledFiles.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+
+      // swap elements i and j
+      [shuffledFiles[i], shuffledFiles[j]] = [shuffledFiles[j], shuffledFiles[i]];
+    }
+    function showPage() {
+      var selectedFiles = shuffledFiles.slice(page * 10, (page + 1) * 10);
+
+      // construct a html string to show these images
+      var htmlStr = '<h3><center>Patch warping based on FreeReg correspondences</center></h3> \
+      <p>Based on the estimated FreeReg correspondences, we warp local RGB patches to their estimated corresponding positions in the point cloud. \
+      Click left/right arrow or navigate dots to view more results. </p><table>';
+      for (var i = 0; i < selectedFiles.length; i += 2) {
+        htmlStr += '<tr>';
+        for (var j = 0; j < 2; j++) {
+          if (i + j < selectedFiles.length) {
+            var file = selectedFiles[i + j];
+            htmlStr += '<td><img class="summary-img" src="./gif_cropped/' + file + '" style="width:100%;"></td>';
+            if (j == 0 && i + j + 1 < selectedFiles.length) {
+              // add a divider (dash line)
+              htmlStr += '<td class="divider"></td>';
+            }
+          }
+        }
+        htmlStr += '</tr>';
+      }
+      htmlStr += '</table>';
+      // add these images to a div with id 'content'
+      document.getElementById('gif-display').innerHTML = htmlStr;
+
+      // update navigation dots
+      for (var i = 0; i < 2; i++) {
+        var dot = document.getElementById('dot' + i);
+        if (i == page) {
+          dot.classList.add('navDotSelected');
+        } else {
+          dot.classList.remove('navDotSelected');
+        }
+      }
+    }
+
+    function prevPage() {
+      if (page > 0) {
+        page--;
+        // add these images to a div with id 'con
+        showPage();
+      }
+      else if (page == 0){
+      page= allFiles.length / 10 - 1;
+        showPage();
+      }
+    }
+
+    function nextPage() {
+      if (page < allFiles.length / 10 - 1) {
+        page++;
+        showPage();
+      }
+      else if (page == allFiles.length / 10 - 1) {
+      page=0;
+        showPage();
+      }
+    }
+
+    // Show the first page when the script is first run
+    showPage();
+  </script>
+  -->
+
+  <div class="content">
+    <h2 style="text-align:center;">Abstract</h2>
+    <p>Image-to-point cloud (I2P) registration is a fundamental task for robots and autonomous vehicles to achieve cross-modality data fusion and localization. 
+      Existing I2P registration methods estimate correspondences at the point/pixel level, often overlooking global alignment. 
+      However, I2P matching can easily converge to a local optimum when performed without high-level guidance from global constraints. 
+      To address this issue, this paper introduces CoFiI2P, a novel I2P registration network that extracts correspondences in a coarse-to-fine manner 
+      to achieve the globally optimal solution. First, the image and point cloud data are processed through a Siamese encoder-decoder network for 
+      hierarchical feature extraction. Second, a coarse-to-fine matching module is designed to leverage these features and establish robust feature correspondences. 
+      Specifically, In the coarse matching phase, a novel I2P transformer module is employed to capture both homogeneous and heterogeneous global information from 
+      the image and point cloud data. This enables the estimation of coarse super-point/super-pixel matching pairs with discriminative descriptors. 
+      In the fine matching module, point/pixel pairs are established with the guidance of super-point/super-pixel correspondences. Finally, based on matching pairs, 
+      the transform matrix is estimated with the EPnP-RANSAC algorithm. Extensive experiments conducted on the KITTI dataset demonstrate that CoFiI2P 
+      achieves impressive results, with a relative rotation error (RRE) of 1.14 degrees and a relative translation error (RTE) of 0.29 meters. 
+      These results represent a significant improvement of 84% in RRE and 89% in RTE compared to the current state-of-the-art (SOTA) method. </p>
+  </div>
+
+  <div class="content">
+    <h2>Introduction Video</h2>
+    <video width="100%" controls autoplay control src="cofii2p/CoFiI2P_ I2P Registration withCoarse-to-Fine Correspondences for Intelligent Driving.mp4" ></video>
+  </div>
+
+
+  <div class="content">
+    <h2>Registration results</h2>
+    <h3>
+      <center>Registration results</center>
+    </h3>
+    <img class="summary-img" src="./cofii2p/registration.png" style="width:100%;">
+    <a>
+     <!--
+      <strong>(a)</strong> Input RGB images and point clouds for registration. 
+      <strong>(b)</strong> Estimated correspondences from the baseline method I2P-Matr. <br>
+      <strong>(c-e)</strong> Estimated correspondences by nearest neighborhood (NN) matcher utilizing Diffusion (FreeReg-D) / Geometric (FreeReg-G) / Fused features (FreeReg).
+     -->
+    </a>
+    <br><br>
+
+    <h3>
+      <center>Correspondences quality</center>
+    </h3>
+    <img class="summary-img" src="./cofii2p/correspondences.png" style="width:100%;">
+    <a>
+      <!--
+      <strong>(a)</strong> color image. 
+      <strong>(b)</strong> 
+      <strong>(c-e)</strong> Diffusion / Geometric / Fused Feature maps of the input RGB images and point clouds. 
+      <strong>(g)</strong> Estimated correspondences from FreeReg.
+      -->
+      </a>
+  </div>
+
+  <div class="content">
+    <h2>BibTex</h2>
+    <code> @article{kang2023cofii2p,<br>
+  &nbsp;&nbsp;title={CoFiI2P: Coarse-to-Fine Correspondences-Based Image-to-Point Cloud Registration},<br>
+  &nbsp;&nbsp;author={Shuhao Kang and Youqi Liao and  and Jianping Li and Fuxun Liang and Yuhao Li and Xianghong Zou and Fangning Li and 
+    Xieyuanli Chen and Zhen Dong and Bisheng Yang and Xieyuanli Chen},<br>
+  &nbsp;&nbsp;journal={arXiv preprint 2309.14660},<br>
+  &nbsp;&nbsp;year={2023}<br>
+  } </code>
+  </div>
+  <div class="content" id="acknowledgements">
+    <p><strong>Acknowledgements</strong>:
+      We borrow this template from <a href="https://whu-usi3dv.github.io/Mobile-Seed/">Mobile-Seed</a>.
+    </p>
+  </div>
+</body>
+
+</html>
