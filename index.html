@@ -83,8 +83,10 @@
     </h3>
     <img src="./cofii2p/c2f.png" class="teaser-gif" style="width:100%"><br>
     <a style="text-align:center">
-      CoFiI2P is an  <strong> image-to-point cloud registration network with coarse-to-fine pipeline.</strong>  (a) shows our coarse-to-fine 2-stage registration pipeline
-      and (b) shows previous one-stage registration pipeline.
+      CoFiI2P is an  <strong> image-to-point cloud registration network with coarse-to-fine pipeline.</strong>  (a) shows the one-stage registration pipeline,
+       where matching pairs are directly established at the point/pixel level, leading to a significant number of mismatches. 
+       (b) shows our coarse-to-fine matching pipeline. Under the guidance of super point-to-pixel pairs, point-to-pixel pairs are generated from the 
+       existing super pairs, which effectively eliminates most mismatches.
   </a>
   </div>
     <!--
@@ -218,7 +220,7 @@
 
   <div class="content">
     <h2>Introduction Video</h2>
-    <video width="100%" controls autoplay control src="cofii2p/CoFiI2P_ I2P Registration withCoarse-to-Fine Correspondences for Intelligent Driving.mp4" ></video>
+    <video width="100%" controls autoplay control src="cofii2p/cofi2p.mp4" ></video>
   </div>
 
 
@@ -240,7 +242,7 @@
     <h3>
       <center>Correspondences quality</center>
     </h3>
-    <img class="summary-img" src="./cofii2p/correspondences.png" style="width:100%;">
+    <img class="summary-img" src="./cofii2p/correspondence.png" style="width:100%;">
     <a>
       <!--
       <strong>(a)</strong> color image. 
