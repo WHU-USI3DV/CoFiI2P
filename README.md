@@ -21,7 +21,8 @@ This is the official PyTorch implementation of the following publication:
 </p>
 
 ## 🆕 News
-- 2024-05-08: [[Project page]](https://whu-usi3dv.github.io/Mobile-Seed/) (with introduction video) is aviliable!🎉  
+- 2024-05-08: [Project page](https://whu-usi3dv.github.io/CoFiI2P/) (with introduction video) is available!🎉  
+- 2024-05-24: [code](https://github.com/WHU-USI3DV/CoFiI2P) is available!🎉
 
 ## 💻 Installation
 
