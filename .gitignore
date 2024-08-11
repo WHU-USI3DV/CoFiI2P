@@ -1,0 +1,8 @@
+eval_results/
+checkpoint/
+logs/
+__pycache__/
+*.npy
+*.png
+*.vscode
+*.ipynb
