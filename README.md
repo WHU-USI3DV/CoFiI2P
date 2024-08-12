@@ -14,7 +14,7 @@ This is the official PyTorch implementation of the following publication:
 <p align="center">
 <strong>TL;DR: CoFiI2P is a coarse-to-fine framework for image-to-point cloud registration task.</strong>
 </p>
-<img src="./motivation.png" alt="Motivation" style="zoom:20%; display: block; margin-left: auto; margin-right: auto; max-width: 100%;">
+<img src="./motivation.png" alt="Motivation" style="zoom:25%; display: block; margin-left: auto; margin-right: auto; max-width: 100%;">
 
 <p align="justify">
 <strong>Abstract:</strong> —Image-to-point cloud (I2P) registration is a fundamental task for robots and autonomous vehicles to achieve crossmodality data fusion and localization. Current I2P registration methods primarily focus on estimating correspondences at the
