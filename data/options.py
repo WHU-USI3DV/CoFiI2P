@@ -68,7 +68,7 @@ class Options_Nuscenes:
         self.accumulation_frame_skip = 4
         
         self.crop_original_top_rows = 100
-        self.img_scale = 0.2
+        self.img_scale = 0.4
         self.img_H = 160  # after scale 
         self.img_W = 320  # after scale 
         # the fine resolution is img_H/scale x img_W/scale

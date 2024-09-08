@@ -3,6 +3,4 @@ checkpoint/
 logs/
 __pycache__/
 *.npy
-*.png
 *.vscode
-*.ipynb
