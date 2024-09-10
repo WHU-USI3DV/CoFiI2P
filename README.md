@@ -6,7 +6,7 @@ This is the official PyTorch implementation of the following publication:
 
 > **CoFiI2P: Coarse-to-Fine Correspondences-Based Image-to-Point Cloud Registration**<br/>
 > [Shuhao Kang*](https://kang-1-2-3.github.io/), [Youqi Liao*](https://martin-liao.github.io/), , [Jianping Li](https://kafeiyin00.github.io/), [FuxunLiang](https://scholar.google.com/citations?user=0Ds4eg8AAAAJ&hl=zh-CN&oi=ao), [Yuhao Li](https://whu-lyh.github.io/), [Xianghong Zou](https://scholar.google.com/citations?hl=zh-CN&user=vTQOkJwAAAAJ), [Fangning Li](http://cki.com.cn/en/), [Xieyuanli Chen](https://xieyuanli-chen.com/), [Zhen Dong](https://dongzhenwhu.github.io/index.html), [Bisheng Yang](https://3s.whu.edu.cn/info/1025/1415.htm)<br/>
-> *Arxiv 2023*<br/>
+> *IEEE RA-L 2024*<br/>
 > [Paper] | [**Arxiv**](https://arxiv.org/abs/2309.14660v2) | [**Project-page**](https://whu-usi3dv.github.io/CoFiI2P/) | [**Video**](https://www.youtube.com/ovbedasXuZE)
 
 
@@ -25,6 +25,7 @@ point or pixel level, often neglecting global alignment. As a result, I2P matchi
 - 2024-05-08: [Project page](https://whu-usi3dv.github.io/CoFiI2P/) (with introduction video) is available!🎉  
 - 2024-05-24: [code](https://github.com/WHU-USI3DV/CoFiI2P) is available!🎉
 - 2024-08-11: support [Nuscenes](https://www.nuscenes.org/) dataset now!🎉 
+- 2024-09-10: accepted by IEEE RA-L 2024!🎉
 
 ## 💻 Installation
 An example for ```CUDA=11.6``` and ```pytorch=1.13.1```:
