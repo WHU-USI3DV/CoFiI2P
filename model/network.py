@@ -134,7 +134,7 @@ class CoFiI2P(nn.Module):
         # fine_img_xy=rearrange(torch.cat((fine_img_x.unsqueeze(-1),fine_img_y.unsqueeze(-1)),dim=2).expand(128, 4, 4, 2), 'b h w d -> b (h w) d').cuda()
         # fine_img_pos = self.fine_img_pos_encoding(fine_img_xy)
         
-        if mode == 'train' :
+        if mode == 'train'  or mode == 'val':
             fine_pc_inline_feature = pc_decode_3[fine_pc_inline_index] #[128, 64]
             
             # [128, 64, 4, 4]
@@ -142,7 +142,7 @@ class CoFiI2P(nn.Module):
             fine_center_xy = None
             coarse_pc_points = None
 
-        elif mode == 'test' or mode == 'val':
+        elif mode == 'test':
             coarse_xy, pc_inline_index = fine_process(coarse_pc_score, pc_feature_norm, img_feature_norm)
             coarse_pc_points = pc_data_dict['points'][-1][pc_inline_index]
             coarse_pc_index = point2node(pc_data_dict['points'][1], coarse_pc_points)

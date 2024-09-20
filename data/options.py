@@ -111,7 +111,7 @@ class Options_Nuscenes:
         self.min_lr = 1e-5
         self.lr_decay_step = 5
         self.lr_decay_scale = 0.5
-        self.val_freq = 1000
+        self.val_freq = 100
 
 
 
