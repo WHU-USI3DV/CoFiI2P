@@ -26,6 +26,7 @@ point or pixel level, often neglecting global alignment. As a result, I2P matchi
 - 2024-05-24: [code](https://github.com/WHU-USI3DV/CoFiI2P) is available!🎉
 - 2024-08-11: support [Nuscenes](https://www.nuscenes.org/) dataset now!🎉 
 - 2024-09-10: accepted by IEEE RA-L 2024!🎉
+- 2024-10-05: We have updated the code for training and evaluation stability!
 
 ## 💻 Installation
 An example for ```CUDA=11.6``` and ```pytorch=1.13.1```:
@@ -68,6 +69,14 @@ Then:
 ```
 python -m evaluation.calc_result
 ```
+The evaluation results on the KITTI Odometry dataset should be close to:
+```
+RRE = 1.25 ± 0.85, RTE = 0.28 ± 0.16
+```
+The evaluation results on the Nuscenes dataset should be close to:
+```
+RRE = 2.61 ± 9.70, RTE = 1.24 ± 8.86
+```
 
 ### Training
 Example: train ```CoFiI2P``` on the KITTI Odometry dataset
@@ -78,13 +87,12 @@ python -m train kitti
 ## 💡 Citation
 If you find this repo helpful, please give us a star~.Please consider citing Mobile-Seed if this program benefits your project.
 ```
-@article{kang2023cofii2p,
-  title={CoFiI2P: Coarse-to-Fine Correspondences-Based Image-to-Point Cloud Registration},
-  author={Shuhao Kang and Youqi Liao and Jianping Li and Fuxun Liang and Yuhao Li and Xianghong Zou and Fangning Li and Xieyuanli Chen and Zhen Dong and Bisheng Yang3},
-  year={2023},
-    eprint={2309.14660},
-    archivePrefix={arXiv},
-    primaryClass={cs.CV}
+@article{kang2024cofii2p,
+  title={CoFiI2P: Coarse-to-Fine Correspondences-Based Image to Point Cloud Registration},
+  author={Kang, Shuhao and Liao, Youqi and Li, Jianping and Liang, Fuxun and Li, Yuhao and Zou, Xianghong and Li, Fangning and Chen, Xieyuanli and Dong, Zhen and Yang, Bisheng},
+  journal={IEEE Robotics and Automation Letters},
+  year={2024},
+  publisher={IEEE}
 }
 ```
 
