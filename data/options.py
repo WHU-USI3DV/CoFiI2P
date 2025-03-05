@@ -5,7 +5,7 @@ import torch
 class Options_KITTI:
     def __init__(self):
         self.epoch = 25
-        self.data_path = "/data/corri2p_data"
+        self.data_path = "../corri2p_data"
         self.root_path = '.'
         self.save_path = "checkpoints"
         self.log_path = "logs"
@@ -30,9 +30,9 @@ class Options_KITTI:
         self.k_interp_point_b = 3
 
         # CAM coordinate
-        self.P_tx_amplitude = 0
+        self.P_tx_amplitude = 10
         self.P_ty_amplitude = 0
-        self.P_tz_amplitude = 0
+        self.P_tz_amplitude = 10
         self.P_Rx_amplitude = 0.0 * math.pi / 12.0
         self.P_Ry_amplitude = 2.0 * math.pi
         self.P_Rz_amplitude = 0.0 * math.pi / 12.0
@@ -47,20 +47,21 @@ class Options_KITTI:
         self.num_workers = 8
         self.gpu_ids = [0]
         self.device = torch.device('cuda', self.gpu_ids[0])
+        # self.device = torch.device('cpu')
         self.norm = 'gn'
         self.group_norm = 32
         self.norm_momentum = 0.1
         self.activation = 'relu'
         self.lr = 1e-3
         self.min_lr = 1e-5
-        self.lr_decay_step = 5
+        self.lr_decay_step = 0.25
         self.lr_decay_scale = 0.5
         self.val_freq = 100
 
 class Options_Nuscenes:
     def __init__(self):
         self.epoch = 10
-        self.data_path = "/data/nuscenes_i2p"
+        self.data_path = "../nuscenes_i2p"
         self.root_path = '.'
         self.save_path = "checkpoints"
         self.log_path = "logs"
@@ -109,7 +110,7 @@ class Options_Nuscenes:
         self.activation = 'relu'
         self.lr = 1e-3
         self.min_lr = 1e-5
-        self.lr_decay_step = 5
+        self.lr_decay_step = 0.25
         self.lr_decay_scale = 0.5
         self.val_freq = 100
 
