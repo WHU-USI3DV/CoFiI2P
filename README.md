@@ -27,6 +27,7 @@ point or pixel level, often neglecting global alignment. As a result, I2P matchi
 - 2024-08-11: support [Nuscenes](https://www.nuscenes.org/) dataset now!🎉 
 - 2024-09-10: accepted by IEEE RA-L 2024!🎉
 - 2024-10-05: We have updated the code for training and evaluation stability!
+- 2025-03-05: Errors in the configuration file have been fixed. Please re - pull the latest version of the code.
 
 ## 💻 Installation
 An example for ```CUDA=11.6``` and ```pytorch=1.13.1```:
