@@ -42,7 +42,7 @@ We will provide a Docker image for quick start.
 ## 🚅 Usage
 
 ### KITTI data preprocessing
-You could download the processed data [here](https://portland-my.sharepoint.com/:u:/g/personal/siyuren2-c_my_cityu_edu_hk/EY_3Cwr3PhZHiNj_ijDPIp0BZx23H9T1J-wrmd6gqbgykw?e=4quHFS) or process it from source. For more details, please refer to [CorrI2P](https://github.com/rsy6318/CorrI2P).
+You could download the processed data [here](https://drive.google.com/drive/folders/1ykHg5y65Qsp0tMpiZ8lRZvydpIXrO_4D) or process it from source. For more details, please refer to [CorrI2P](https://github.com/rsy6318/CorrI2P).
 
 ### Nuscenes data preprocessing 
 Due to the extremely large scale of processed data (200G approximately), we only provide the data pre-processing code now. Please download the source data [here](https://www.nuscenes.org/nuscenes) and refer to following steps for building image-to-point cloud registration data:
