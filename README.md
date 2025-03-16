@@ -28,7 +28,7 @@ point or pixel level, often neglecting global alignment. As a result, I2P matchi
 - 2024-09-10: accepted by IEEE RA-L 2024!🎉
 - 2024-10-05: We have updated the code for training and evaluation stability!
 - 2025-03-05: Errors in the configuration file have been fixed. Please re-pull the latest version of the code.
-- 2025-03-16: Upload pre-processed KITTI and Nuscenes data for I2P registration.
+- 2025-03-16: Upload pre-processed KITTI and Nuscenes data for the I2P registration.
 
 ## 💻 Installation
 An example for ```CUDA=11.6``` and ```pytorch=1.13.1```:
@@ -48,7 +48,7 @@ You could download the processed data [here](https://drive.google.com/drive/fold
 ### Nuscenes data preprocessing 
 ~~Due to the extremely large scale of processed data (200G approximately), we only provide the data pre-processing code now.~~ 
 
-You could download the processed data [here](https://drive.google.com/file/d/12rzj-16SKO-uaXYWpRo1_lpQyLKNxtSj/view?usp=sharing)(~124G). If you want to build the ``Nuscenes_I2P`` data from source, please download the source data [here](https://www.nuscenes.org/nuscenes) and refer to following steps for building image-to-point cloud registration data:
+You could download the processed data [here](https://drive.google.com/drive/folders/1uwJ478kTVlTT3lYrYBzybmNA69daf2lh)(~124G). If you want to build the ``Nuscenes_I2P`` data from source, please download the source data [here](https://www.nuscenes.org/nuscenes) and refer to following steps for building image-to-point cloud registration data:
 - build datainfo:
 ```
 python -m data.build_nuscenes.build_datainfo
