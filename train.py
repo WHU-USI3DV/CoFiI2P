@@ -24,7 +24,7 @@ def get_P_diff(P_pred_np,P_gt_np):
     angles_diff=np.sum(np.abs(R_diff.as_euler('xzy',degrees=True)))
     return t_diff,angles_diff
 
-def test_acc(model,testdataloader,opt,topk_range = 5):
+def test_acc(device, model,testdataloader,opt,topk_range = 5):
     
     t_diff_set=[]
     angles_diff_set=[]
@@ -67,7 +67,7 @@ def test_acc(model,testdataloader,opt,topk_range = 5):
 
         img_features,pc_features, coarse_img_score, coarse_pc_score\
                 , fine_img_feature_patch, fine_pc_inline_feature\
-                    , fine_center_xy, coarse_pc_points=model(pc_data_dict,img, fine_center_kpt_coors,fine_xy, fine_pc_inline_index, mode)    # [128, 20, 64] ,[128, 2560]
+                    , fine_center_xy, coarse_pc_points=model(device, pc_data_dict,img, fine_center_kpt_coors,fine_xy, fine_pc_inline_index, mode)    # [128, 20, 64] ,[128, 2560]
 
         pc_features_inline=torch.gather(pc_features,index=pc_kpt_idx.expand(pc_features.size(0),opt.num_kpt),dim=-1)
         pc_xyz_inline=torch.gather(pc_data_dict['points'][-1].T,index=pc_kpt_idx.unsqueeze(0).expand(3,opt.num_kpt),dim=-1)
@@ -146,8 +146,8 @@ if __name__=='__main__':
                                            shuffle = False,
                                            drop_last = False,
                                            num_workers = opt.num_workers)
-
-    model=CoFiI2P(opt).cuda()
+    device = opt.device
+    model=CoFiI2P(opt).to(device)
     if args.ft_from:
         model.load_state_dict(torch.load(args.ft_from),strict = True)
         
@@ -184,41 +184,42 @@ if __name__=='__main__':
     for epoch in range(opt.epoch):
         for step,data in enumerate(trainloader):
             global_step+=1
+            index = data['index']
             start_time = time.time()
             model.train()
             mode = 'train'
             optimizer.zero_grad()
-            img=data['img'].cuda()
+            img=data['img'].to(device)
             # pc = data['pc'].cuda()  #full size
             # intensity = data['intensity'].cuda()
             # sn = data['sn'].cuda()
             pc_data_dict=data['pc_data_dict']
             for key in pc_data_dict:
                 for j in range(len(pc_data_dict[key])):
-                    pc_data_dict[key][j] = torch.squeeze(pc_data_dict[key][j]).cuda()
-            pc_data_dict['feats'] = torch.squeeze(pc_data_dict['feats']).cuda()
-            K_4=torch.squeeze(data['K_4'].cuda())
-            K=torch.squeeze(data['K'].cuda())
-            P=torch.squeeze(data['P'].cuda())
+                    pc_data_dict[key][j] = torch.squeeze(pc_data_dict[key][j]).to(device)
+            pc_data_dict['feats'] = torch.squeeze(pc_data_dict['feats']).to(device)
+            K_4=torch.squeeze(data['K_4'].to(device))
+            K=torch.squeeze(data['K'].to(device))
+            P=torch.squeeze(data['P'].to(device))
             # pc_mask=data['pc_mask'].cuda()  
             # img_mask=torch.squeeze(data['img_mask']).cuda()     #1/4 size
-            coarse_img_mask=torch.squeeze(data['coarse_img_mask']).cuda()  # [20, 64]
+            coarse_img_mask=torch.squeeze(data['coarse_img_mask']).to(device)  # [20, 64]
             # B=coarse_img_mask.size(0)
-            pc_kpt_idx=torch.squeeze(data['pc_kpt_idx']).cuda()  #(128)
-            pc_outline_idx=torch.squeeze(data['pc_outline_idx']).cuda()  #(128)
+            pc_kpt_idx=torch.squeeze(data['pc_kpt_idx']).to(device) #(128)
+            pc_outline_idx=torch.squeeze(data['pc_outline_idx']).to(device)  #(128)
             # img_kpt_idx=torch.squeeze(data['img_kpt_idx']).cuda()
-            fine_img_kpt_index = torch.squeeze(data['fine_img_kpt_index']).cuda()  # [128]
+            fine_img_kpt_index = torch.squeeze(data['fine_img_kpt_index']).to(device)  # [128]
             
-            coarse_img_kpt_idx=torch.squeeze(data['coarse_img_kpt_idx']).cuda()  # [128]
+            coarse_img_kpt_idx=torch.squeeze(data['coarse_img_kpt_idx']).to(device)  # [128]
             # img_outline_idx=torch.squeeze(data['coarse_img_outline_index']).cuda()  # [128]
-            fine_center_kpt_coors = torch.squeeze(data['fine_center_kpt_coors']).cuda()  #[3, 128]
-            fine_xy = torch.squeeze(data['fine_xy_coors']).cuda()
-            fine_pc_inline_index = torch.squeeze(data['fine_pc_inline_index']).cuda()
+            fine_center_kpt_coors = torch.squeeze(data['fine_center_kpt_coors']).to(device)  #[3, 128]
+            fine_xy = torch.squeeze(data['fine_xy_coors']).to(device)
+            fine_pc_inline_index = torch.squeeze(data['fine_pc_inline_index']).to(device)
 
-            img_x=torch.linspace(0,coarse_img_mask.size(-1)-1,coarse_img_mask.size(-1)).view(1,-1).expand(coarse_img_mask.size(-2),coarse_img_mask.size(-1)).unsqueeze(0).cuda()
-            img_y=torch.linspace(0,coarse_img_mask.size(-2)-1,coarse_img_mask.size(-2)).view(-1,1).expand(coarse_img_mask.size(-2),coarse_img_mask.size(-1)).unsqueeze(0).cuda()
+            img_x=torch.linspace(0,coarse_img_mask.size(-1)-1,coarse_img_mask.size(-1)).view(1,-1).expand(coarse_img_mask.size(-2),coarse_img_mask.size(-1)).unsqueeze(0).to(device)
+            img_y=torch.linspace(0,coarse_img_mask.size(-2)-1,coarse_img_mask.size(-2)).view(-1,1).expand(coarse_img_mask.size(-2),coarse_img_mask.size(-1)).unsqueeze(0).to(device)
             # [2, 20, 64] coarse level
-            img_xy=torch.cat((img_x,img_y),dim=0)
+            img_xy=torch.cat((img_x,img_y),dim=0).to(device)
             # model_start = time.time()
             img_features,pc_features, coarse_img_score, coarse_pc_score\
                 , fine_img_feature_patch, fine_pc_inline_feature\
@@ -250,13 +251,13 @@ if __name__=='__main__':
             correspondence_mask=(torch.sqrt(torch.sum(torch.square(img_xy_flatten_inline.unsqueeze(-1)-pc_xy_projection.unsqueeze(-2)),dim=0)) <= opt.dist_thres).float()
 
             # loss_desc = coarse_circle_loss(img_features_flatten_inline,pc_features_inline,correspondence_mask)
-            loss_desc,dists=desc_loss(img_features_flatten_inline,pc_features_inline,correspondence_mask,pos_margin = opt.pos_margin,neg_margin = opt.neg_margin)
+            loss_desc,dists=desc_loss(device, img_features_flatten_inline,pc_features_inline,correspondence_mask,pos_margin = opt.pos_margin,neg_margin = opt.neg_margin)
             
             coarse_pc_inline_score = torch.squeeze(coarse_pc_score[:, :, pc_kpt_idx])
             coarse_pc_outline_score = torch.squeeze(coarse_pc_score[:, :, pc_outline_idx])
             writer.add_scalars('pc_score', {'inline_max': coarse_pc_inline_score.max(), 'inline_min': coarse_pc_inline_score.min(), 'inline_avg': torch.mean(coarse_pc_inline_score),
                                             'outline_max': coarse_pc_outline_score.max(), 'outline_min': coarse_pc_outline_score.min(), 'outline_avg': torch.mean(coarse_pc_outline_score)}, global_step)
-            loss_coarse = overlap_loss(coarse_pc_inline_score, coarse_pc_outline_score)
+            loss_coarse = overlap_loss(device, coarse_pc_inline_score, coarse_pc_outline_score)
             '''
             fine match
             '''
@@ -268,7 +269,7 @@ if __name__=='__main__':
             relative_index = relative_coors[1, :] * 4 + relative_coors[0,:]
 
             if global_step % opt.val_freq==0:
-                recall_num = torch.zeros(opt.num_kpt)
+                recall_num = torch.zeros(opt.num_kpt).to(device)
                 fine_pc_inline = fine_pc_inline_feature.unsqueeze(-1)
                 fine_img_feature_flatten = torch.squeeze(rearrange(fine_img_feature_patch, 'b c h w -> b c (h w)'))
                 fine_dist = torch.cosine_similarity(fine_img_feature_flatten.unsqueeze(-1), fine_pc_inline.unsqueeze(-2))
@@ -276,9 +277,9 @@ if __name__=='__main__':
                 fine_predict_index = torch.argmax(fine_dist, dim=1)
                 mask = torch.where(fine_predict_index == relative_index)[0]
                 recall_num[mask]=1
-                fine_recall = torch.sum(recall_num) / opt.num_kpt
+                fine_recall = torch.sum(recall_num).cpu() / opt.num_kpt
                 writer.add_scalar('fine_recall', fine_recall, int(global_step / 100.0))
-            loss_fine = fine_circle_loss(fine_img_feature_patch, fine_pc_inline_feature, relative_index, opt.num_kpt)
+            loss_fine = fine_circle_loss(device, fine_img_feature_patch, fine_pc_inline_feature, relative_index, opt.num_kpt)
             loss = loss_desc + loss_coarse + loss_fine
             # back_start = time.time()
             loss.backward()
@@ -290,8 +291,8 @@ if __name__=='__main__':
             # print('total time:', end_time-start_time)
             #torch.cuda.empty_cache()
             # print(loss)
-            writer.add_scalar("loss:", loss, global_step)
-            writer.add_scalar('loss_desc:', loss_desc, global_step)
+            writer.add_scalar("loss:", loss.detach().cpu().numpy(), global_step)
+            writer.add_scalar('loss_desc:', loss_desc.detach().cpu().numpy(), global_step)
             writer.add_scalar('loss_coarse:', loss_coarse.detach().cpu().numpy(), global_step)
             writer.add_scalar('loss_fine:', loss_fine.detach().cpu().numpy(), global_step)
             
@@ -304,7 +305,7 @@ if __name__=='__main__':
                             loss_fine.data.cpu().numpy()))
             
             if global_step % opt.val_freq == 0:
-                acc = test_acc(model,testloader,opt)
+                acc = test_acc(device, model,testloader,opt)
                 logger.info('acc: top5 %s %s %s %s %s',
                             acc[0].cpu().numpy(),
                             acc[1].cpu().numpy(), 

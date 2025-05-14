@@ -41,7 +41,7 @@ class KittiCalibHelper:
                     mat = np.fromstring(line[4:], sep=' ').reshape(
                         (3, 4)).astype(np.float32)
                     if 'Tr' == key:
-                        P = np.identity(4)
+                        P = np.identity(4,dtype = np.float32)
                         P[0:3, :] = mat
                         calib_matrix_dict[seq_int][key] = P
                     else:
@@ -57,8 +57,8 @@ class KittiCalibHelper:
                         tz = mat[2, 3]
                         tx = (mat[0, 3] - cx * tz) / fx
                         ty = (mat[1, 3] - cy * tz) / fy
-                        P = np.identity(4)
-                        P[0:3, 3] = np.asarray([tx, ty, tz])
+                        P = np.identity(4,dtype = np.float32)
+                        P[0:3, 3] = np.asarray([tx, ty, tz],dtype = np.float32)
                         calib_matrix_dict[seq_int][key] = P
         return calib_matrix_dict
 
@@ -141,6 +141,7 @@ class kitti_pc_img_dataset(data.Dataset):
                                 K2_folder, seq, i, 'P2', sample_num))
                 dataset.append((img3_folder, pc_folder,
                                 K3_folder, seq, i, 'P3', sample_num))
+                
         return dataset
 
 
@@ -156,11 +157,11 @@ class kitti_pc_img_dataset(data.Dataset):
         pcd.normals=o3d.utility.Vector3dVector(np.transpose(sn))
 
         down_pcd=pcd.voxel_down_sample(voxel_size=voxel_grid_downsample_size)
-        down_pcd_points=np.transpose(np.asarray(down_pcd.points))
+        down_pcd_points=np.transpose(np.asarray(down_pcd.points,dtype = np.float32))
         pointcloud=down_pcd_points
 
-        intensity=np.transpose(np.asarray(down_pcd.colors)[:,0:1])*intensity_max
-        sn=np.transpose(np.asarray(down_pcd.normals))
+        intensity=np.transpose(np.asarray(down_pcd.colors,dtype = np.float32)[:,0:1])*intensity_max
+        sn=np.transpose(np.asarray(down_pcd.normals,dtype = np.float32))
 
         return pointcloud, intensity, sn
 
@@ -213,7 +214,7 @@ class kitti_pc_img_dataset(data.Dataset):
         R = np.dot(Rz, np.dot(Ry, Rx))
         return R
 
-    def generate_random_transform(self):
+    def generate_random_transform(self,mode):
         """
         :param pc_np: pc in NWU coordinate
         :return:
@@ -221,10 +222,11 @@ class kitti_pc_img_dataset(data.Dataset):
         t = [random.uniform(-self.P_tx_amplitude, self.P_tx_amplitude),
              random.uniform(-self.P_ty_amplitude, self.P_ty_amplitude),
              random.uniform(-self.P_tz_amplitude, self.P_tz_amplitude)]
+        t = [tx * 0.0 for tx in t] if mode == "train" else t # discard random translation during training
+
         angles = [random.uniform(-self.P_Rx_amplitude, self.P_Rx_amplitude),
                   random.uniform(-self.P_Ry_amplitude, self.P_Ry_amplitude),
                   random.uniform(-self.P_Rz_amplitude, self.P_Rz_amplitude)]
-
         rotation_mat = self.angles2rotation_matrix(angles)
         P_random = np.identity(4, dtype=np.float32)
         P_random[0:3, 0:3] = rotation_mat
@@ -255,6 +257,11 @@ class kitti_pc_img_dataset(data.Dataset):
         return len(self.dataset)
 
     def __getitem__(self, index):
+        # set random seed for data pre-processing
+        (seed,) = np.random.SeedSequence([index]).generate_state(1)
+        seed = int(seed)
+        np.random.seed(seed)
+        random.seed(seed)
         # obtain data from disk
         img_folder, pc_folder, K_folder, seq, seq_i, key, _ = self.dataset[index]
         img = np.load(os.path.join(img_folder, '%06d.npy' % seq_i))
@@ -271,11 +278,12 @@ class kitti_pc_img_dataset(data.Dataset):
         sn = np.dot(P_Tr[0:3, 0:3], sn)
         K = np.load(os.path.join(K_folder, '%06d.npy' % seq_i))
 
+        # print(index, type(pc), type(intensity), type(sn))
         # 1. transform pc into 40960 points
         pc, intensity, sn = self.downsample_with_intensity_sn(pc, intensity, sn, voxel_grid_downsample_size=0.1)
         pc, intensity, sn = self.downsample_np(pc, intensity,sn)
 
-        P = self.generate_random_transform()
+        P = self.generate_random_transform(self.mode)
         pc = np.dot(P[0:3, 0:3], pc) + P[0:3, 3:]
         sn = np.dot(P[0:3, 0:3], sn)
         
@@ -332,12 +340,12 @@ class kitti_pc_img_dataset(data.Dataset):
 
         pc_kpt_idx=np.where(coarse_points_mask.squeeze()==1)[0]
         # assert len(pc_kpt_idx) >= 64
-        index=np.random.permutation(len(pc_kpt_idx))[0:self.num_kpt]
-        pc_kpt_idx=pc_kpt_idx[index]
+        sel_index=np.random.permutation(len(pc_kpt_idx))[0:self.num_kpt]
+        pc_kpt_idx=pc_kpt_idx[sel_index]
 
         pc_outline_idx=np.where(coarse_points_mask.squeeze()==0)[0]
-        index=np.random.permutation(len(pc_outline_idx))[0:self.num_kpt]
-        pc_outline_idx=pc_outline_idx[index]
+        sel_index=np.random.permutation(len(pc_outline_idx))[0:self.num_kpt]
+        pc_outline_idx=pc_outline_idx[sel_index]
 
         xy2 = xy[:, is_in_picture]
         img_mask_s8 = coo_matrix((np.ones_like(xy2[0, :]), (xy2[1, :], xy2[0, :])), shape=(int(self.img_H*scale_size), int(self.img_W*scale_size))).toarray()
@@ -346,8 +354,8 @@ class kitti_pc_img_dataset(data.Dataset):
         coarse_xy = xy[:, pc_kpt_idx]
         img_kpt_s8_index=xy[1,pc_kpt_idx]*self.img_W*scale_size +xy[0,pc_kpt_idx]
         img_outline_index=np.where(img_mask_s8.squeeze().reshape(-1)==0)[0]
-        index=np.random.permutation(len(img_outline_index))[0:self.num_kpt]
-        img_outline_index=img_outline_index[index]
+        sel_index=np.random.permutation(len(img_outline_index))[0:self.num_kpt]
+        img_outline_index=img_outline_index[sel_index]
 
         # project to 1/2 resolution image
         coarse_kpts = coarse_points[:, pc_kpt_idx]
@@ -361,15 +369,15 @@ class kitti_pc_img_dataset(data.Dataset):
         # get coarse inline points on fine feature map 
         fine_xy_kpts_index = fine_xy[1,:]*self.img_W*0.5 +fine_xy[0,:]
         fine_center_kpts_coors = coarse_xy * 4
-        indices = point2node(data_dict['points'][1], data_dict['points'][-1][pc_kpt_idx])
-
+        # indices = point2node(data_dict['points'][1], data_dict['points'][-1][pc_kpt_idx])
+        indices = point2node(data_dict['points'][1], data_dict['points'][-1][torch.from_numpy(pc_kpt_idx).long()])
         return {'img': torch.from_numpy(img.astype(np.float32) / 255.).permute(2, 0, 1).contiguous(),
                 'pc_data_dict': data_dict,
                 'fine_pc_inline_index': indices.long(),
                 'K': torch.from_numpy(K_2.astype(np.float32)),
                 'K_4': torch.from_numpy(K_4.astype(np.float32)),
                 'P': torch.from_numpy(np.linalg.inv(P).astype(np.float32)),
-
+                'index': index,
                 # 'pc_mask': torch.from_numpy(pc_mask).float(),       #(1,20480)
                 'coarse_img_mask': torch.from_numpy(img_mask_s8).float(),     #(40,128)
                 # 'img_mask': torch.from_numpy(img_mask).float(),

@@ -6,6 +6,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation
 from pathlib import Path
 import cv2
+import datetime
 
 from model.network import CoFiI2P
 from data.kitti import kitti_pc_img_dataset
@@ -48,7 +49,9 @@ if __name__=='__main__':
     model.load_state_dict(torch.load(args.ckpt))
     model=model.cuda()
 
-    eval_path = Path(args.eval_path) / args.dataset    
+    curr_date = datetime.datetime.now()
+    curr_date = curr_date.strftime("%Y%m%d_%H%M%S")
+    eval_path = Path(args.eval_path) / args.dataset / curr_date     
     if os.path.exists(eval_path) == False:
         os.makedirs(eval_path)
 
@@ -124,7 +127,7 @@ if __name__=='__main__':
             save_dict['superpoints_score'] = coarse_pc_score # [1, 1, 1280]
             save_dict['fine_xy'] = fine_xy
             save_dict['object_points'] = coarse_pc_points
-            print(eval_path / str('%06d.npy'%(step)))
+            # print(eval_path / str('%06d.npy'%(step)))
             np.save(eval_path / str('%06d.npy'%(step)), save_dict)
         # total_time = np.array(total_time)
         t_diff_set = np.array(t_diff_set)

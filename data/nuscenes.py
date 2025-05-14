@@ -130,15 +130,17 @@ class nuscenes_pc_img_dataset(data.Dataset):
         R = np.dot(Rz, np.dot(Ry, Rx))
         return R
 
-    def generate_random_transform(self,seed):
+    def generate_random_transform(self,mode):
         """
         :param pc_np: pc in NWU coordinate
         :return:
         """
-        random.seed(seed)
+        # random.seed(seed)
         t = [random.uniform(-self.P_tx_amplitude, self.P_tx_amplitude),
              random.uniform(-self.P_ty_amplitude, self.P_ty_amplitude),
              random.uniform(-self.P_tz_amplitude, self.P_tz_amplitude)]
+        t = [tx * 0.0 for tx in t]  if mode == "train" else t # discard random translation during training
+
         angles = [random.uniform(-self.P_Rx_amplitude, self.P_Rx_amplitude),
                   random.uniform(-self.P_Ry_amplitude, self.P_Ry_amplitude),
                   random.uniform(-self.P_Rz_amplitude, self.P_Rz_amplitude)]
@@ -173,6 +175,10 @@ class nuscenes_pc_img_dataset(data.Dataset):
         return len(self.dataset)
 
     def __getitem__(self, index):
+        # (seed,) = np.random.SeedSequence([index]).generate_state(1)
+        seed = index
+        np.random.seed(seed)
+        random.seed(seed)
         # obtain data from disk
         filename = self.dataset[index]
         # with open(data_path,'rb') as f: 
@@ -197,7 +203,7 @@ class nuscenes_pc_img_dataset(data.Dataset):
         # pc, intensity = self.downsample_with_intensity_sn(pc, intensity, voxel_grid_downsample_size=0.1)
         pc, intensity = self.downsample_np(pc, intensity)
 
-        P = self.generate_random_transform(index)
+        P = self.generate_random_transform(self.mode)
         pc = np.dot(P[0:3, 0:3], pc) + P[0:3, 3:]
         # sn = np.dot(P[0:3, 0:3], sn)
         

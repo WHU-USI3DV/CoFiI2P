@@ -27,8 +27,9 @@ point or pixel level, often neglecting global alignment. As a result, I2P matchi
 - 2024-08-11: support [Nuscenes](https://www.nuscenes.org/) dataset now!🎉 
 - 2024-09-10: accepted by IEEE RA-L 2024!🎉
 - 2024-10-05: We have updated the code for training and evaluation stability!
-- 2025-03-05: Errors in the configuration file have been fixed. Please re-pull the latest version of the code.
+- 2025-03-05: Errors in the configuration file have been fixed. Please re-pull the latest code.
 - 2025-03-16: Upload pre-processed KITTI and Nuscenes data for the I2P registration.
+- 2025-05-14: Update configurations, data pre-processing files for training and evaluation stability. Please re-pull the latest code.
 
 ## 💻 Installation
 An example for ```CUDA=11.6``` and ```pytorch=1.13.1```:
@@ -75,12 +76,13 @@ python -m evaluation.calc_result
 ```
 The evaluation results on the KITTI Odometry dataset should be close to:
 ```
-RRE = 1.25 ± 0.85, RTE = 0.28 ± 0.16
+RRE = 1.24 ± 0.84, RTE = 0.31 ± 0.20
 ```
 The evaluation results on the Nuscenes dataset should be close to:
 ```
-RRE = 2.61 ± 9.70, RTE = 1.24 ± 8.86
+RRE = 2.54 ± 8.93, RTE = 1.21 ± 9.55
 ```
+**Following [Dr. Bie Lin's](https://www.researchgate.net/profile/Lin-Bie/research) suggestion, we incorporated random translations in the x-y plane during evaluation. We are grateful to their careful review of our code and helpful suggestions~**
 
 ### Training
 Example: train ```CoFiI2P``` on the KITTI Odometry dataset

@@ -42,8 +42,8 @@ def precompute_point_cloud_stack_mode(points, intensity, normals, lengths, num_s
     subsampling_list = []
     upsampling_list = []
 
-    pcd = o3d.geometry.PointCloud()
-    pcd.points=o3d.utility.Vector3dVector(np.transpose(points))
+    # pcd = o3d.geometry.PointCloud()
+    # pcd.points=o3d.utility.Vector3dVector(np.transpose(points))
     # intensity_max=np.max(intensity)
 
     # fake_colors=np.zeros((points.shape[1],3))
@@ -55,13 +55,16 @@ def precompute_point_cloud_stack_mode(points, intensity, normals, lengths, num_s
     for i in range(num_stages):
         if i > 0:
             # random sample half points of last stage(except stage1)
-            pcd = pcd.random_down_sample(0.5)
+            random_indices = np.random.choice(np.arange(points.shape[1]),size = points.shape[1] // 2)
+            points = points[:,random_indices]
+            # pcd = pcd.random_down_sample(0.5)
             # print(pcd.shape)
 
         # down_pcd_points=np.transpose(np.asarray(points.points))
         # intensity=np.transpose(np.asarray(points.colors)[:,0:1])*intensity_max
         # sn=np.transpose(np.asarray(points.normals))
-        points_list.append(torch.Tensor(np.asarray(pcd.points)))
+        # points_list.append(torch.Tensor(np.asarray(pcd.points)))
+        points_list.append(torch.Tensor(points).permute(1,0))
         lengths_list.append(int(lengths))
         lengths = lengths // 2
         # intensity_list.append(intensity)

@@ -6,7 +6,7 @@ import torch.nn as nn
 from einops import rearrange
 from scipy import ndimage
 
-def fine_circle_loss(fine_img_feature,fine_pc_feature, relative_index, num_kpt = 64):
+def fine_circle_loss(device, fine_img_feature,fine_pc_feature, relative_index, num_kpt = 64):
     m = 0.2
     gamma = 5
     
@@ -16,8 +16,8 @@ def fine_circle_loss(fine_img_feature,fine_pc_feature, relative_index, num_kpt =
     # print(fine_img_feature.shape, fine_pc_feature.shape) [128, 64, 16] [128, 64, 1]
     dist = torch.cosine_similarity(fine_img_feature_flatten.unsqueeze(-1), fine_pc_feature.unsqueeze(-2))
     # print(dist.max(), dist.min())
-    label = torch.zeros(num_kpt, 16).cuda()
-    index = torch.arange(0, num_kpt, 1).cuda()
+    label = torch.zeros(num_kpt, 16).to(device)
+    index = torch.arange(0, num_kpt, 1).to(device)
     true_index = torch.cat((index.unsqueeze(1), relative_index.unsqueeze(1)), 1)
     label[true_index[:, 0], true_index[:, 1]] = 1
     
@@ -50,10 +50,10 @@ def fine_circle_loss(fine_img_feature,fine_pc_feature, relative_index, num_kpt =
     loss = torch.mean(torch.log(1 + loss_n * loss_p))
     return loss
         
-def overlap_loss(inline_pc_score, outline_pc_score):
+def overlap_loss(device, inline_pc_score, outline_pc_score):
     bce_loss = nn.BCELoss()
-    pos_label = torch.ones(inline_pc_score.shape[0]).cuda()
-    neg_label = torch.zeros(outline_pc_score.shape[0]).cuda()
+    pos_label = torch.ones(inline_pc_score.shape[0]).to(device)
+    neg_label = torch.zeros(outline_pc_score.shape[0]).to(device)
     label = torch.cat((pos_label, neg_label), 0)
     score = torch.cat((inline_pc_score, outline_pc_score), 0)
     loss = bce_loss(score, label)
@@ -66,7 +66,7 @@ def normalize_distance(distance_matrix):
     normalized_arr = (distance_matrix - min_arr) / (max_arr - min_arr) 
     return normalized_arr
 
-def desc_loss(img_features,pc_features,mask,pos_margin=0.1,neg_margin=1.4,log_scale=10,num_kpt=512):
+def desc_loss(device, img_features,pc_features,mask,pos_margin=0.1,neg_margin=1.4,log_scale=10,num_kpt=512):
     pos_mask=mask
     neg_mask=1-mask
     #dists=torch.sqrt(torch.sum((img_features.unsqueeze(-1)-pc_features.unsqueeze(-2))**2,dim=1))

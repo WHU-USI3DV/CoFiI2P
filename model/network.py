@@ -104,7 +104,7 @@ class CoFiI2P(nn.Module):
         img_x, img_y = torch.meshgrid(torch.arange(0,self.pe_H), torch.arange(0, self.pe_W), indexing='ij')
         img_xy=rearrange(torch.cat((img_x.unsqueeze(-1),img_y.unsqueeze(-1)),dim=2).expand(1, self.pe_H, self.pe_W, 2), 'b h w d -> b (h w) d').cuda()
         img_pos = self.img_pos_encoding(img_xy)  # [12, 1280, 64]
-        pc_pos = self.pc_pos_encoding(pc_data_dict['points'][-1].unsqueeze(0))  # [2560, 128]
+        pc_pos =  self.pc_pos_encoding(pc_data_dict['points'][-1].unsqueeze(0))  # [2560, 128]
         # print(img_pos.shape, pc_pos.shape)
         #########
         # Transformer
@@ -143,7 +143,12 @@ class CoFiI2P(nn.Module):
             coarse_pc_points = None
 
         elif mode == 'test':
-            coarse_xy, pc_inline_index = fine_process(coarse_pc_score, pc_feature_norm, img_feature_norm)
+            pc_inline_index = None
+            thrs = 0.9
+            while pc_inline_index == None or pc_inline_index.numel() < 4:
+            # pnpransac requires at least 4 points
+                coarse_xy, pc_inline_index = fine_process(coarse_pc_score, pc_feature_norm, img_feature_norm,thrs = thrs)
+                thrs -= 0.02
             coarse_pc_points = pc_data_dict['points'][-1][pc_inline_index]
             coarse_pc_index = point2node(pc_data_dict['points'][1], coarse_pc_points)
             # coarse_pc_index = search_point_index(pc_data_dict['points'][1].cpu().numpy(), coarse_pc_points.cpu().numpy())
@@ -159,9 +164,9 @@ class CoFiI2P(nn.Module):
         return img_feature_norm, pc_feature_norm, coarse_img_score, coarse_pc_score, fine_img_feature_patch, fine_pc_inline_feature, fine_center_xy, coarse_pc_points
 
 
-def fine_process(coarse_pc_score, coarse_pc_feature, coarse_img_feature):
+def fine_process(coarse_pc_score, coarse_pc_feature, coarse_img_feature,thrs = 0.9):
     coarse_pc_score = torch.squeeze(coarse_pc_score)
-    pc_inline_index = torch.where(coarse_pc_score >= 0.9)[0]
+    pc_inline_index = torch.where(coarse_pc_score >= thrs)[0]
     # print(len(pc_inline_index))
     coarse_pc_inline_feature = coarse_pc_feature[:, pc_inline_index.long()] # [C, N]
     coarse_img_feature_flatten = torch.squeeze(rearrange(coarse_img_feature, 'b c h w -> b c (h w)'))

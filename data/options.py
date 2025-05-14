@@ -87,9 +87,9 @@ class Options_Nuscenes:
         self.k_interp_point_b = 3
 
         # CAM coordinate
-        self.P_tx_amplitude = 0
+        self.P_tx_amplitude = 10
         self.P_ty_amplitude = 0
-        self.P_tz_amplitude = 0
+        self.P_tz_amplitude = 10
         self.P_Rx_amplitude = 0.0 * math.pi / 12.0
         self.P_Ry_amplitude = 2.0 * math.pi
         self.P_Rz_amplitude = 0.0 * math.pi / 12.0
