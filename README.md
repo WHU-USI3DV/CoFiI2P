@@ -82,7 +82,7 @@ The evaluation results on the Nuscenes dataset should be close to:
 ```
 RRE = 2.54 ± 8.93, RTE = 1.21 ± 9.55
 ```
-**Following [Dr. Bie Lin's](https://www.researchgate.net/profile/Lin-Bie/research) suggestion, we incorporated random translations in the x-y plane during evaluation. We are grateful to their careful review of our code and helpful suggestions~**
+**Following [Dr. Bie Lin's](https://www.researchgate.net/profile/Lin-Bie/research) suggestion, we incorporated random translations in the x-y plane during evaluation. We are grateful to his careful review of our code and helpful suggestions~.**
 
 ### Training
 Example: train ```CoFiI2P``` on the KITTI Odometry dataset
