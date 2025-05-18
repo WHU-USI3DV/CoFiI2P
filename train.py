@@ -67,7 +67,7 @@ def test_acc(device, model,testdataloader,opt,topk_range = 5):
 
         img_features,pc_features, coarse_img_score, coarse_pc_score\
                 , fine_img_feature_patch, fine_pc_inline_feature\
-                    , fine_center_xy, coarse_pc_points=model(device, pc_data_dict,img, fine_center_kpt_coors,fine_xy, fine_pc_inline_index, mode)    # [128, 20, 64] ,[128, 2560]
+                    , fine_center_xy, coarse_pc_points=model(pc_data_dict,img, fine_center_kpt_coors,fine_xy, fine_pc_inline_index, mode)    # [128, 20, 64] ,[128, 2560]
 
         pc_features_inline=torch.gather(pc_features,index=pc_kpt_idx.expand(pc_features.size(0),opt.num_kpt),dim=-1)
         pc_xyz_inline=torch.gather(pc_data_dict['points'][-1].T,index=pc_kpt_idx.unsqueeze(0).expand(3,opt.num_kpt),dim=-1)
