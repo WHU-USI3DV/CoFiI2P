@@ -222,7 +222,7 @@ class kitti_pc_img_dataset(data.Dataset):
         t = [random.uniform(-self.P_tx_amplitude, self.P_tx_amplitude),
              random.uniform(-self.P_ty_amplitude, self.P_ty_amplitude),
              random.uniform(-self.P_tz_amplitude, self.P_tz_amplitude)]
-        t = [tx * 0.0 for tx in t] if mode == "train" else t # discard random translation during training
+        # t = [tx * 0.0 for tx in t] if mode == "train" else t # discard random translation during training
 
         angles = [random.uniform(-self.P_Rx_amplitude, self.P_Rx_amplitude),
                   random.uniform(-self.P_Ry_amplitude, self.P_Ry_amplitude),
