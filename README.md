@@ -7,7 +7,7 @@ This is the official PyTorch implementation of the following publication:
 > **CoFiI2P: Coarse-to-Fine Correspondences-Based Image-to-Point Cloud Registration**<br/>
 > [Shuhao Kang*](https://kang-1-2-3.github.io/), [Youqi Liao*](https://martin-liao.github.io/), , [Jianping Li](https://kafeiyin00.github.io/), [FuxunLiang](https://scholar.google.com/citations?user=0Ds4eg8AAAAJ&hl=zh-CN&oi=ao), [Yuhao Li](https://whu-lyh.github.io/), [Xianghong Zou](https://scholar.google.com/citations?hl=zh-CN&user=vTQOkJwAAAAJ), [Fangning Li](http://cki.com.cn/en/), [Xieyuanli Chen](https://xieyuanli-chen.com/), [Zhen Dong](https://dongzhenwhu.github.io/index.html), [Bisheng Yang](https://3s.whu.edu.cn/info/1025/1415.htm)<br/>
 > *IEEE RA-L 2024*<br/>
-> [**Paper**](https://ieeexplore.ieee.org/abstract/document/10685082) | [**Arxiv**](https://arxiv.org/abs/2309.14660v2) | [**Project-page**](https://whu-usi3dv.github.io/CoFiI2P/) | [**Video**](https://www.youtube.com/ovbedasXuZE)
+> [**Paper**](https://ieeexplore.ieee.org/abstract/document/10685082) | [**Arxiv**](https://arxiv.org/abs/2309.14660v2) | [**Project-page**](https://whu-usi3dv.github.io/CoFiI2P/) | [**Video**](https://www.youtube.com/ovbedasXuZE) | [**Docker Image**](https://drive.google.com/drive/folders/1cDb0FelJKs65-z9zA2brmY4EY9os0yIB?usp=sharing)
 
 
 ## 🔭 Introduction
@@ -89,6 +89,7 @@ Example: train ```CoFiI2P``` on the KITTI Odometry dataset
 ```
 python -m train kitti
 ```
+You could download the Docker image from Google drive [here](https://drive.google.com/drive/folders/1cDb0FelJKs65-z9zA2brmY4EY9os0yIB?usp=sharing) for model training and evaluation.
 
 ## 💡 Citation
 If you find this repo helpful, please give us a star~.Please consider citing Mobile-Seed if this program benefits your project.
